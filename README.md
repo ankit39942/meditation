@@ -1,4 +1,3 @@
-# meditation
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,157 +6,185 @@
     <title>Meditation App</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial, sans-serif';
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            background-color: #f0f8ff;
-            margin: 0;
-            padding: 20px;
+            height: 100vh;
         }
+
         .container {
-            text-align: center;
-            background-color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in-out;
         }
+
         h1 {
-            color: #333333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
         }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+
+        .form-container {
+            margin-bottom: 20px;
         }
+
         label {
-            text-align: left;
+            display: block;
+            margin: 10px 0 5px;
         }
+
         input {
             padding: 10px;
-            border: 1px solid #dddddd;
+            border: none;
             border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
         }
+
         button {
-            padding: 10px;
-            background-color: #4caf50;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #0072ff;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 1em;
         }
+
         button:hover {
-            background-color: #45a049;
+            background-color: #005bb5;
         }
-        #recommendation {
+
+        .recommendation {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
             margin-top: 20px;
-        }
-        #suggestedImage {
-            max-width: 100%;
-            height: auto;
             display: none;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .recommendation img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .recommendation p {
+            color: black;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Meditation App</h1>
-        <form id="userInputForm">
+        <div class="form-container">
             <label for="weight">Weight (kg):</label>
-            <input type="number" id="weight" name="weight" required>
-            
+            <input type="number" id="weight" name="weight">
+
             <label for="height">Height (cm):</label>
-            <input type="number" id="height" name="height" required>
-            
-            <label for="caloriesBurnt">Calories Burnt Today:</label>
-            <input type="number" id="caloriesBurnt" name="caloriesBurnt" required>
-            
-            <label for="caloriesIntake">Calories Intake Today:</label>
-            <input type="number" id="caloriesIntake" name="caloriesIntake" required>
+            <input type="number" id="height" name="height">
+
+            <label for="calories-burnt">Calories Burnt Today:</label>
+            <input type="number" id="calories-burnt" name="calories-burnt">
+
+            <label for="calories-intake">Calories Intake Today:</label>
+            <input type="number" id="calories-intake" name="calories-intake">
 
             <label for="age">Age:</label>
-            <input type="number" id="age" name="age" required>
-            
-            <button type="submit">Get Recommendation</button>
-        </form>
-        
-        <div id="recommendation">
-            <img id="suggestedImage" src="" alt="Meditation Image">
-            <audio id="suggestedMusic" controls>
-                <source id="audioSource" src="" type="audio/mp3">
-                Your browser does not support the audio element.
-            </audio>
-            <div id="suggestedExercise"></div>
+            <input type="number" id="age" name="age">
+
+            <button type="button" onclick="showRecommendation()">Get Recommendation</button>
+        </div>
+        <div class="recommendation" id="recommendation">
+            <h2>Recommendation</h2>
+            <div id="recommendation-content"></div>
         </div>
     </div>
 
     <script>
-        document.getElementById('userInputForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            // Collect user inputs
-            const weight = document.getElementById('weight').value;
-            const height = document.getElementById('height').value;
-            const caloriesBurnt = document.getElementById('caloriesBurnt').value;
-            const caloriesIntake = document.getElementById('caloriesIntake').value;
+        function showRecommendation() {
             const age = document.getElementById('age').value;
+            const recommendation = document.getElementById('recommendation');
+            const recommendationContent = document.getElementById('recommendation-content');
 
-            // Placeholder logic to suggest media based on age
-            let recommendedImage;
-            let recommendedMusic;
-            let recommendedExercise;
+            let recommendations = [];
 
             if (age < 30) {
-                recommendedImage = 'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0'; // Example for age < 30
-                recommendedMusic = 'https://cdn.pixabay.com/download/audio/2023/03/23/audio_8d3a2c9b0a.mp3'; // Example for age < 30
-                recommendedExercise = `
-                    <h3>Recommended Yoga Asanas:</h3>
-                    <ul>
-                        <li>Surya Namaskar (Sun Salutation)</li>
-                        <li>Vrikshasana (Tree Pose)</li>
-                        <li>Virabhadrasana (Warrior Pose)</li>
-                    </ul>
-                    <h3>Recommended Exercises:</h3>
-                    <ul>
-                        <li>Push-ups</li>
-                        <li>Squats</li>
-                        <li>Jumping Jacks</li>
-                    </ul>
-                `;
+                recommendations = [
+                    { text: 'Try the Mountain Pose for relaxation.', image: 'https://source.unsplash.com/featured/?yoga', audio: 'https://www.example.com/mountain_pose_audio.mp3' },
+                    { text: 'Try the Warrior Pose for strength.', image: 'https://source.unsplash.com/featured/?yoga', audio: 'https://www.example.com/warrior_pose_audio.mp3' }
+                ];
+            } else if (age < 50) {
+                recommendations = [
+                    { text: 'Try the Tree Pose for balance.', image: 'https://source.unsplash.com/featured/?yoga', audio: 'https://www.example.com/tree_pose_audio.mp3' },
+                    { text: 'Try the Bridge Pose for flexibility.', image: 'https://source.unsplash.com/featured/?yoga', audio: 'https://www.example.com/bridge_pose_audio.mp3' }
+                ];
             } else {
-                recommendedImage = 'https://images.unsplash.com/photo-1551334787-21e6bd3ab135'; // Example for age >= 30
-                recommendedMusic = 'https://cdn.pixabay.com/download/audio/2023/03/22/audio_6b9c2c7b1c.mp3'; // Example for age >= 30
-                recommendedExercise = `
-                    <h3>Recommended Yoga Asanas:</h3>
-                    <ul>
-                        <li>Balasana (Child's Pose)</li>
-                        <li>Setu Bandhasana (Bridge Pose)</li>
-                        <li>Shavasana (Corpse Pose)</li>
-                    </ul>
-                    <h3>Recommended Exercises:</h3>
-                    <ul>
-                        <li>Walking</li>
-                        <li>Light Jogging</li>
-                        <li>Stretching</li>
-                    </ul>
-                `;
+                recommendations = [
+                    { text: 'Try the Seated Forward Bend for flexibility.', image: 'https://source.unsplash.com/featured/?yoga', audio: 'https://www.example.com/seated_forward_bend_audio.mp3' },
+                    { text: 'Try the Corpse Pose for relaxation.', image: 'https://source.unsplash.com/featured/?yoga', audio: 'https://www.example.com/corpse_pose_audio.mp3' }
+                ];
             }
 
-            // Display the recommended image and music
-            const suggestedImageElement = document.getElementById('suggestedImage');
-            const suggestedMusicElement = document.getElementById('suggestedMusic');
-            const audioSourceElement = document.getElementById('audioSource');
-            const suggestedExerciseElement = document.getElementById('suggestedExercise');
+            recommendations.push({ text: 'Consider a walk in the park for some fresh air.', image: 'https://source.unsplash.com/featured/?park', audio: 'https://www.example.com/walk_park_audio.mp3' });
+            recommendations.push({ text: 'Try a cycling session for some cardio.', image: 'https://source.unsplash.com/featured/?cycling', audio: 'https://www.example.com/cycling_audio.mp3' });
 
-            suggestedImageElement.src = recommendedImage;
-            suggestedImageElement.style.display = 'block';
+            recommendationContent.innerHTML = '';
 
-            audioSourceElement.src = recommendedMusic;
-            suggestedMusicElement.style.display = 'block';
-            suggestedMusicElement.load(); // Reload the audio element
+            recommendations.forEach((rec, index) => {
+                setTimeout(() => {
+                    const recElement = document.createElement('div');
+                    recElement.innerHTML = `
+                        <p>${rec.text}</p>
+                        <img src="${rec.image}" alt="Recommendation Image">
+                        <audio controls>
+                            <source src="${rec.audio}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    `;
+                    recElement.style.animation = 'slideIn 0.5s ease-in-out';
+                    recommendationContent.appendChild(recElement);
+                }, index * 600);
+            });
 
-            suggestedExerciseElement.innerHTML = recommendedExercise;
-        });
+            recommendation.style.display = 'block';
+        }
     </script>
 </body>
 </html>
